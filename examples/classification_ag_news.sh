@@ -23,8 +23,8 @@ DATASET=(
   ag_news
 )
 
-MODELDIR=/tmp/starspace/models
-DATADIR=/tmp/starspace/data
+MODELDIR=data/starspace/models
+DATADIR=data/starspace/data
 
 mkdir -p "${MODELDIR}"
 mkdir -p "${DATADIR}"
@@ -73,4 +73,3 @@ echo "Start to evaluate trained model:"
   -similarity "dot" \
   -trainMode 0 \
   -verbose true
-
