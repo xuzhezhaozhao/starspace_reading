@@ -49,13 +49,13 @@ echo "Start to train on ag_news data:"
   -model "${MODELDIR}"/ag_news \
   -initRandSd 0.01 \
   -adagrad false \
-  -ngrams 1 \
-  -lr 0.01 \
+  -ngrams 2 \
+  -lr 0.025 \
   -epoch 5 \
   -thread 20 \
-  -dim 10 \
+  -dim 100 \
   -negSearchLimit 5 \
-  -maxNegSamples 3 \
+  -maxNegSamples 5 \
   -trainMode 0 \
   -label "__label__" \
   -similarity "dot" \
@@ -66,8 +66,8 @@ echo "Start to evaluate trained model:"
 ./starspace test \
   -model "${MODELDIR}"/ag_news \
   -testFile "${DATADIR}"/ag_news.test \
-  -ngrams 1 \
-  -dim 10 \
+  -ngrams 2 \
+  -dim 100 \
   -label "__label__" \
   -thread 10 \
   -similarity "dot" \

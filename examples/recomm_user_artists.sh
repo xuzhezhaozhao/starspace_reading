@@ -11,8 +11,8 @@
 # Last.FM (http://www.lastfm.com) dataset
 
 
-MODELDIR=/tmp/starspace/models
-DATADIR=/tmp/starspace/data
+MODELDIR=data/starspace/models
+DATADIR=data/starspace/data
 DATASET=lastfm
 
 mkdir -p "${MODELDIR}/${DATASET}"
@@ -22,15 +22,15 @@ convert_data() {
     PREV_ID=0
     SET=""
 
-    while read -r line 
+    while read -r line
     do
         read USER_ID ARTIST_ID COUNT <<< $line
-        if [ $PREV_ID == $USER_ID ] 
+        if [ $PREV_ID == $USER_ID ]
         then
             SET="$SET A$ARTIST_ID"
         else
             if [ $PREV_ID != 0 ]
-            then 
+            then
                 echo $SET
             fi
             SET="A$ARTIST_ID"

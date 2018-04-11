@@ -8,18 +8,18 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 #
 
-MODELDIR=/tmp/starspace/models
-DATADIR=/tmp/starspace/data
+MODELDIR=data/starspace/models
+DATADIR=data/starspace/data
 DATASET=FB15k
 
 convert_data() {
-    while read -r line 
+    while read -r line
     do
         read HEAD_ENTITY RELATION_TYPE TAIL_ENTITY <<< $line
         REVERSE_RELATION='reverse'$RELATION_TYPE
         echo -e ''$HEAD_ENTITY'\t'$RELATION_TYPE'\t__label__'$TAIL_ENTITY''
         echo -e ''$TAIL_ENTITY'\t'$REVERSE_RELATION'\t__label__'$HEAD_ENTITY''
-    done < "$1"  
+    done < "$1"
 }
 
 mkdir -p "${MODELDIR}"
@@ -30,9 +30,9 @@ if [ ! -f "${DATADIR}/${DATASET}/fb15k.train" ]
 then
     wget -c "https://s3.amazonaws.com/fair-data/starspace/fb15k.tgz" -O "${DATADIR}/${DATASET}_csv.tar.gz"
     tar -xzvf "${DATADIR}/${DATASET}_csv.tar.gz" -C "${DATADIR}"
-    
+
     echo "Converting data to StarSpace format ..."
-    
+
     convert_data "${DATADIR}/${DATASET}/freebase_mtr100_mte100-train.txt" > "${DATADIR}/${DATASET}/fb15k.train"
     convert_data "${DATADIR}/${DATASET}/freebase_mtr100_mte100-test.txt" > "${DATADIR}/${DATASET}/fb15k.test"
 fi
