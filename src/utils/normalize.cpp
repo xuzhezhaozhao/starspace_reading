@@ -45,6 +45,7 @@ void normalize_text(std::string& str) {
     allNumeric = false;
   }
 
+  // TODO(zhezhaoxu) flattenCase 这个变量并没有改变
   bool flattenCase = true;
   bool flattenNum = allNumeric && containsDigits;
   if (!flattenNum && !flattenCase) return;

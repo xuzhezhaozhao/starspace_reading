@@ -21,6 +21,7 @@ using namespace std;
 
 namespace starspace {
 
+// 去除行尾的指定字符
 void chomp(std::string& line, char toChomp = '\n') {
   auto sz = line.size();
   if (sz >= 1 && line[sz - 1] == toChomp) {

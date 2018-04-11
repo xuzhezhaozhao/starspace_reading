@@ -74,9 +74,10 @@ class Dictionary {
 
     std::shared_ptr<Args> args_;
     std::vector<entry> entryList_;
+    // 大小为 MAX_VOCAB_SIZE, index 指向 entryList_
     std::vector<int32_t> hashToIndex_;
 
-    int32_t size_;
+    int32_t size_; // 词典大小, 等于 entryList_.size()
     int32_t nwords_;
     int32_t nlabels_;
     int64_t ntokens_;

@@ -37,12 +37,14 @@
 
 namespace starspace {
 
+// word id : weight
 typedef std::pair<int32_t, float> Base;
 
 struct ParseResults {
   float weight = 1.0;
-  std::vector<Base> LHSTokens;
-  std::vector<Base> RHSTokens;
+  std::vector<Base> LHSTokens; // word 类型
+  std::vector<Base> RHSTokens; // label 类型
+  // RHS token 可以有 features, 如句子，其 features 就是单词
   std::vector<std::vector<Base>> RHSFeatures;
 };
 

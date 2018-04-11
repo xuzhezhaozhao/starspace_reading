@@ -41,6 +41,7 @@ uint32_t Dictionary::hash(const std::string& str) const {
   return h;
 }
 
+// 返回 word hash 值
 int32_t Dictionary::find(const std::string& w) const {
   int32_t h = hash(w) % MAX_VOCAB_SIZE;
   while (hashToIndex_[h] != -1 && entryList_[hashToIndex_[h]].symbol != w) {
@@ -49,6 +50,7 @@ int32_t Dictionary::find(const std::string& w) const {
   return h;
 }
 
+// 返回 word index
 int32_t Dictionary::getId(const string& symbol) const {
   int32_t h = find(symbol);
   return hashToIndex_[h];
@@ -194,6 +196,7 @@ void Dictionary::threshold(int64_t t, int64_t tl) {
   computeCounts();
 }
 
+// 重新调整 hashToIndex_
 void Dictionary::computeCounts() {
   size_ = 0;
   nwords_ = 0;
