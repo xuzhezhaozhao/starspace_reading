@@ -40,6 +40,7 @@ namespace starspace {
 // word id : weight
 typedef std::pair<int32_t, float> Base;
 
+// 一行, one example
 struct ParseResults {
   float weight = 1.0;
   std::vector<Base> LHSTokens; // word 类型
@@ -48,6 +49,7 @@ struct ParseResults {
   std::vector<std::vector<Base>> RHSFeatures;
 };
 
+// 多行
 typedef std::vector<ParseResults> Corpus;
 
 class DataParser {

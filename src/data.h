@@ -61,6 +61,7 @@ protected:
   std::vector<ParseResults> examples_;
 
   int32_t idx_ = -1;
+  // examples_ 大小
   int32_t size_ = 0;
 };
 

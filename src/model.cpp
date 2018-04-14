@@ -79,6 +79,8 @@ Real dot(Matrix<Real>::Row a, Matrix<Real>::Row b) {
   return ublas::inner_prod(a, b);
 }
 
+// real: norm_2 v = sqrt (sum (v [i] * v [i]))
+// complex: norm_2 v = sqrt (sum (v [i] * conj (v [i])))
 Real norm2(Matrix<Real>::Row a) {
   auto retval = norm_2(a);
   return std::max(std::numeric_limits<Real>::epsilon(), retval);
@@ -167,6 +169,7 @@ Real EmbedModel::trainOneExample(
   }
 }
 
+// 返回 loss
 Real EmbedModel::train(shared_ptr<InternDataHandler> data,
                        int numThreads,
 		       std::chrono::time_point<std::chrono::high_resolution_clock> t_start,
@@ -235,6 +238,7 @@ Real EmbedModel::train(shared_ptr<InternDataHandler> data,
       if ((i % kDecrStep) == (kDecrStep - 1)) {
         rate -= decrPerKSample;
       }
+      // 打印进度日志
       if (amMaster && ((ip - indices.begin()) % 100 == 99 || (ip + 1) == end)) {
         auto t_end = std::chrono::high_resolution_clock::now();
         auto t_epoch_spent =

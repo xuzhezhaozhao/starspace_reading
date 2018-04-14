@@ -169,6 +169,7 @@ private:
   std::shared_ptr<SparseLinear<Real>> RHSEmbeddings_;
   std::shared_ptr<Args> args_;
 
+  // adagrad 有关的参数, 大小分别为 lhs 和 rhs embedding 行数
   std::vector<Real> LHSUpdates_;
   std::vector<Real> RHSUpdates_;
 

@@ -33,6 +33,7 @@ class Args {
     double termLr;
     double norm;
     double margin;
+    // embedding 初始化为 [0, initRandSd] 之间的正态分布
     double initRandSd;
     double p;
     double dropoutLHS;
@@ -58,8 +59,10 @@ class Args {
     bool normalizeText;
     bool saveEveryEpoch;
     bool saveTempModel;
+    // lhs 和 rhs 两个 embeddings 是否为同一个
     bool shareEmb;
     bool useWeight;
+    // TODO(zhezhaoxu) 打开此开关会训练?
     bool trainWord;
 
     void parseArgs(int, char**);
