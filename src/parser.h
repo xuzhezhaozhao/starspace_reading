@@ -45,13 +45,16 @@ struct ParseResults {
   float weight = 1.0;
   std::vector<Base> LHSTokens; // word 类型
   std::vector<Base> RHSTokens; // label 类型
-  // RHS token 可以有 features, 如句子，其 features 就是单词
+
+  // labelDoc 格式下没有 RHSTokens, 使用 RHSFeatures 代替,
+  // 如句子，其 features 就是单词
   std::vector<std::vector<Base>> RHSFeatures;
 };
 
 // 多行
 typedef std::vector<ParseResults> Corpus;
 
+// fastText file format parser
 class DataParser {
 public:
   explicit DataParser(

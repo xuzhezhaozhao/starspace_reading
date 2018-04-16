@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+data/
+embed_doc
+print_ngrams
+query_nn
+query_predict
+starspace

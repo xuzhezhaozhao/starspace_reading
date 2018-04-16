@@ -24,6 +24,7 @@ LayerDataParser::LayerDataParser(
     shared_ptr<Args> args)
 : DataParser(dict, args) {};
 
+// 子类独有函数, 解析一行, 将 tokens 和 ngrams 添加到 feats 中
 bool LayerDataParser::parse(
     string& s,
     vector<Base>& feats,
@@ -70,6 +71,7 @@ bool LayerDataParser::parse(
   return feats.size() > 0;
 }
 
+// 重载解析一行数据的函数, sep 默认为 '\t'
 bool LayerDataParser::parse(
     string& line,
     ParseResults& rslt,

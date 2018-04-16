@@ -36,6 +36,7 @@ DataParser::DataParser(
   args_ = args;
 }
 
+// 解析一行数据, LHS, RHS, weight
 bool DataParser::parse(
     std::string& s,
     ParseResults& rslts,
@@ -48,6 +49,7 @@ bool DataParser::parse(
   return parse(toks, rslts);
 }
 
+// dict 中使用, 读取 token, 过滤 weight
 void DataParser::parseForDict(
     string& line,
     vector<string>& tokens,
@@ -111,6 +113,7 @@ void DataParser::addNgrams(
   }
 }
 
+// word 放入 LHS, label 放入 RHS
 bool DataParser::parse(
     const std::vector<std::string>& tokens,
     ParseResults& rslts) {
@@ -157,6 +160,7 @@ bool DataParser::parse(
   return check(rslts);
 }
 
+// 只读取 word, 不读取 label
 bool DataParser::parse(
     const std::vector<std::string>& tokens,
     vector<Base>& rslts) {

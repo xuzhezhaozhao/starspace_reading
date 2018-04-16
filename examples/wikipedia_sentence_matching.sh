@@ -12,8 +12,8 @@ DATASET=(
   wikipedia
 )
 
-MODELDIR=/tmp/starspace/models
-DATADIR=/tmp/starspace/data
+MODELDIR=data/starspace/models
+DATADIR=data/starspace/data
 
 mkdir -p "${MODELDIR}"
 mkdir -p "${DATADIR}"
@@ -27,7 +27,7 @@ then
     tar -xzvf "${DATADIR}/${DATASET[0]}_test.tar.gz" -C "${DATADIR}"
     wget -c "https://s3.amazonaws.com/fair-data/starspace/wikipedia_shuf_test_basedocs_tm3.txt" -O "${DATADIR}/${DATASET[0]}_test_basedocs_tm3.txt"
   fi
-    
+
 echo "Compiling StarSpace"
 
 make

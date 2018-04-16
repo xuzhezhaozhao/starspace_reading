@@ -31,8 +31,10 @@ StarSpace::StarSpace(shared_ptr<Args> args)
 
 void StarSpace::initParser() {
   if (args_->fileFormat == "fastText") {
+    std::cout << "use fastText file format" << std::endl;
     parser_ = make_shared<DataParser>(dict_, args_);
   } else if (args_->fileFormat == "labelDoc") {
+    std::cout << "use labelDoc file format" << std::endl;
     parser_ = make_shared<LayerDataParser>(dict_, args_);
   } else {
     cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
