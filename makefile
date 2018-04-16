@@ -8,7 +8,7 @@
 #
 
 CXX = g++
-CXXFLAGS = -pthread -std=gnu++11
+CXXFLAGS = -pthread -std=c++11
 
 BOOST_DIR = /usr/local/bin/boost_1_63_0/
 GTEST_DIR = /usr/local/bin/googletest

@@ -19,13 +19,18 @@
 
 #include <fstream>
 #include <boost/noncopyable.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <vector>
 
 
 namespace starspace {
 
 typedef float Real;
-typedef boost::numeric::ublas::matrix_row<typeof(Matrix<Real>::matrix)>
+// typeof is gnu extension, don't use it;
+// typedef boost::numeric::ublas::matrix_row<typeof(Matrix<Real>::matrix)>
+// MatrixRow;
+typedef boost::numeric::ublas::matrix_row<boost::numeric::ublas::matrix<Real>>
   MatrixRow;
 typedef boost::numeric::ublas::vector<Real> Vector;
 
