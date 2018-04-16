@@ -17,6 +17,8 @@ OBJS = normalize.o dict.o args.o proj.o parser.o data.o model.o starspace.o doc_
 TESTS = matrix_test proj_test
 INCLUDES = -I$(BOOST_DIR)
 
+STATIC_LIB= libstarspace.a
+
 opt: CXXFLAGS += -O3 -funroll-loops
 opt: starspace
 
@@ -118,7 +120,12 @@ embed_doc: $(OBJS) src/apps/embed_doc.cpp
 cf_predict: $(OBJS) src/apps/cf_predict.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/cf_predict.cpp -o cf_predict
 
+$(STATIC_LIB): $(OBJS)
+	ar -crv $@ $(OBJS)
+
 test: $(TESTS)
+
+lib: $(STATIC_LIB)
 
 clean:
 	rm -rf *.o starspace gtest.a gtest_main.a *_test query_nn query_predict print_ngrams embed_doc cf_predict
