@@ -40,6 +40,10 @@ class StarSpace {
         const std::string& line,
         std::vector<Base>& ids,
         const std::string& sep);
+    void parseForCF(
+        const std::string& line,
+        std::vector<Base>& ids,
+        const std::string& sep);
 
     void nearestNeighbor(const std::string& line, int k);
 
@@ -50,7 +54,7 @@ class StarSpace {
     const std::string kMagic = "STARSPACE-2017-2";
 
     void loadBaseDocs();
-    
+
     void predictOne(
         const std::vector<Base>& input,
         std::vector<Predictions>& pred);

@@ -213,6 +213,16 @@ void StarSpace::parseDoc(
   parser_->parse(tokens, ids);
 }
 
+void StarSpace::parseForCF(
+    const string& line,
+    vector<Base>& ids,
+    const string& sep) {
+
+  vector<string> tokens;
+  boost::split(tokens, line, boost::is_any_of(string(sep)));
+  parser_->parseForCF(tokens, ids);
+}
+
 Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
   vector<Base> ids;
   parseDoc(line, ids, sep);

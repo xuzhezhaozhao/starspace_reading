@@ -75,6 +75,10 @@ public:
       const std::vector<std::string>& tokens,
       std::vector<Base>& rslt);
 
+  bool parseForCF(
+      const std::vector<std::string>& tokens,
+      std::vector<Base>& rslt);
+
   bool parse(
       const std::vector<std::string>& tokens,
       ParseResults& rslt);

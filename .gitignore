@@ -36,4 +36,5 @@ embed_doc
 print_ngrams
 query_nn
 query_predict
+cf_predict
 starspace

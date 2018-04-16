@@ -196,4 +196,37 @@ bool DataParser::parse(
   return rslts.size() > 0;
 }
 
+// 只读取 label, 不读取 word
+bool DataParser::parseForCF(
+    const std::vector<std::string>& tokens,
+    vector<Base>& rslts) {
+
+  for (auto &token: tokens) {
+    auto t = token;
+    float weight = 1.0;
+    if (args_->useWeight) {
+      std::size_t pos = token.find(":");
+      if (pos != std::string::npos) {
+        t = token.substr(0, pos);
+        weight = atof(token.substr(pos + 1).c_str());
+      }
+    }
+
+    if (args_->normalizeText) {
+      normalize_text(t);
+    }
+    int32_t wid = dict_->getId(t);
+    if (wid < 0) {
+      continue;
+    }
+
+    entry_type type = dict_->getType(wid);
+    if (type == entry_type::label) {
+      rslts.push_back(make_pair(wid, weight));
+    }
+  }
+
+  return rslts.size() > 0;
+}
+
 } // namespace starspace

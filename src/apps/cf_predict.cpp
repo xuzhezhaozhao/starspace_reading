@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     if (!getline(cin, input) || input.size() == 0) break;
     // Do the prediction
     vector<Base> query_vec;
-    sp.parseDoc(input, query_vec, " ");
+    sp.parseForCF(input, query_vec, " ");
     std::cout << "query_vec.size = " << query_vec.size() << std::endl;
     vector<Predictions> predictions;
     sp.predictOne(query_vec, predictions);

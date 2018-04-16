@@ -101,6 +101,8 @@ starspace.o: src/starspace.cpp src/starspace.h
 starspace: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
 
+apps: query_nn query_predict print_ngrams embed_doc cf_predict
+
 query_nn: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_nn.cpp -o query_nn
 
@@ -113,7 +115,10 @@ print_ngrams: $(OBJS)
 embed_doc: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/embed_doc.cpp -o embed_doc
 
+cf_predict: $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/cf_predict.cpp -o cf_predict
+
 test: $(TESTS)
 
 clean:
-	rm -rf *.o starspace gtest.a gtest_main.a *_test query_nn print_ngrams
+	rm -rf *.o starspace gtest.a gtest_main.a *_test query_nn query_predict print_ngrams embed_doc cf_predict
