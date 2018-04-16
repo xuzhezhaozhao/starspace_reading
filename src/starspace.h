@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <unordered_set>
+
 #include "utils/args.h"
 #include "dict.h"
 #include "matrix.h"
@@ -58,6 +60,10 @@ class StarSpace {
     void predictOne(
         const std::vector<Base>& input,
         std::vector<Predictions>& pred);
+    void predictOneForCF(
+        const std::vector<Base>& input,
+        std::vector<Predictions>& pred,
+        const std::unordered_set<int>& banSet);
 
     std::shared_ptr<Args> args_;
     std::vector<std::vector<Base>> baseDocs_;

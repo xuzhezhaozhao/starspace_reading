@@ -98,24 +98,24 @@ doc_parser.o: dict.o src/doc_parser.cpp src/doc_parser.h
 starspace.o: src/starspace.cpp src/starspace.h
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/starspace.cpp
 
-starspace: $(OBJS)
+starspace: $(OBJS) src/main.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
 
 apps: query_nn query_predict print_ngrams embed_doc cf_predict
 
-query_nn: $(OBJS)
+query_nn: $(OBJS) src/apps/query_nn.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_nn.cpp -o query_nn
 
-query_predict: $(OBJS)
+query_predict: $(OBJS) src/apps/query_predict.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_predict.cpp -o query_predict
 
-print_ngrams: $(OBJS)
+print_ngrams: $(OBJS) src/apps/print_ngrams.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/print_ngrams.cpp -o print_ngrams
 
-embed_doc: $(OBJS)
+embed_doc: $(OBJS) src/apps/embed_doc.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/embed_doc.cpp -o embed_doc
 
-cf_predict: $(OBJS)
+cf_predict: $(OBJS) src/apps/cf_predict.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/cf_predict.cpp -o cf_predict
 
 test: $(TESTS)

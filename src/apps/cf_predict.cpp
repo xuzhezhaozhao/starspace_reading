@@ -50,8 +50,13 @@ int main(int argc, char** argv) {
     vector<Base> query_vec;
     sp.parseForCF(input, query_vec, " ");
     std::cout << "query_vec.size = " << query_vec.size() << std::endl;
+    std::unordered_set<int> banSet;
+    for (auto &p: query_vec) {
+      std::cout << "ban id = " << p.first << std::endl;
+      banSet.insert(p.first);
+    }
     vector<Predictions> predictions;
-    sp.predictOne(query_vec, predictions);
+    sp.predictOneForCF(query_vec, predictions, banSet);
     for (int i = 0; i < predictions.size(); i++) {
       cout << i << "[" << predictions[i].first << "]: ";
       sp.printDoc(cout, sp.baseDocs_[predictions[i].second]);

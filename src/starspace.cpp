@@ -317,6 +317,29 @@ void StarSpace::predictOne(
   }
 }
 
+void StarSpace::predictOneForCF(
+    const vector<Base>& input,
+    vector<Predictions>& pred,
+    const std::unordered_set<int> &banSet) {
+  auto lhsM = model_->projectLHS(input);
+  std::priority_queue<Predictions> heap;
+  for (int i = 0; i < baseDocVectors_.size(); i++) {
+    auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
+    heap.push({ cur_score, i });
+  }
+  // get the first K predictions
+  int i = 0;
+  while (i < args_->K && heap.size() > 0) {
+    auto t = heap.top();
+    heap.pop();
+    if (banSet.count(baseDocs_[t.second][0].first) > 0) {
+      continue;
+    }
+    pred.push_back(t);
+    i++;
+  }
+}
+
 Metrics StarSpace::evaluateOne(
     const vector<Base>& lhs,
     const vector<Base>& rhs,
