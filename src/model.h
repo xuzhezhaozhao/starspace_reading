@@ -190,8 +190,8 @@ private:
 
   static void check(const boost::numeric::ublas::matrix<Real>& m) {
     if (!debug) return;
-    for (int i = 0; i < m.size1(); i++) {
-      for (int j = 0; j < m.size2(); j++) {
+    for (size_t i = 0; i < m.size1(); i++) {
+      for (size_t j = 0; j < m.size2(); j++) {
         assert(!std::isnan(m(i, j)));
         assert(!std::isinf(m(i, j)));
       }

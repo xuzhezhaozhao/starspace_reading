@@ -9,17 +9,20 @@
 
 CXX = g++
 CXXFLAGS = -pthread -std=c++11
+LINKFLAGS = -lopenblas -Ldeps/openblas/lib
 
 BOOST_DIR = /usr/local/bin/boost_1_63_0/
 GTEST_DIR = /usr/local/bin/googletest
 
-OBJS = normalize.o dict.o args.o proj.o parser.o data.o model.o starspace.o doc_parser.o doc_data.o utils.o starspace_api.o
+OBJS = normalize.o dict.o args.o proj.o parser.o data.o model.o starspace.o \
+	   doc_parser.o doc_data.o utils.o starspace_api.o openblas_util.o \
+	   simple_matrix.o simple_vector.o
 TESTS = matrix_test proj_test
-INCLUDES = -I$(BOOST_DIR)
+INCLUDES = -I$(BOOST_DIR) -I.
 
 STATIC_LIB= libstarspace.a
 
-all: starspace apps lib
+all: opt apps lib
 
 opt: CXXFLAGS += -O3 -funroll-loops
 opt: starspace
@@ -99,6 +102,15 @@ parser.o: dict.o src/parser.cpp src/parser.h
 doc_parser.o: dict.o src/doc_parser.cpp src/doc_parser.h
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/doc_parser.cpp -o doc_parser.o
 
+openblas_util.o: src/utils/openblas_util.cpp src/utils/openblas_util.h
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/utils/openblas_util.cpp
+
+simple_matrix.o: src/utils/simple_matrix.cpp src/utils/simple_matrix.h
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/utils/simple_matrix.cpp
+
+simple_vector.o: src/utils/simple_vector.cpp src/utils/simple_vector.h
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/utils/simple_vector.cpp
+
 starspace.o: src/starspace.cpp src/starspace.h
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/starspace.cpp
 
@@ -106,27 +118,27 @@ starspace_api.o: src/api/starspace_api.cpp src/api/starspace_api.h
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -g -c src/api/starspace_api.cpp
 
 starspace: $(OBJS) src/main.cpp
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp  $(LINKFLAGS) -o starspace
 
 test_api: $(OBJS) src/api/test_api.cpp
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/api/test_api.cpp -o test_api
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/api/test_api.cpp $(LINKFLAGS) -o test_api
 
 apps: query_nn query_predict print_ngrams embed_doc cf_predict test_api
 
 query_nn: $(OBJS) src/apps/query_nn.cpp
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_nn.cpp -o query_nn
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_nn.cpp $(LINKFLAGS) -o query_nn
 
 query_predict: $(OBJS) src/apps/query_predict.cpp
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_predict.cpp -o query_predict
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_predict.cpp $(LINKFLAGS) -o query_predict
 
 print_ngrams: $(OBJS) src/apps/print_ngrams.cpp
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/print_ngrams.cpp -o print_ngrams
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/print_ngrams.cpp $(LINKFLAGS) -o print_ngrams
 
 embed_doc: $(OBJS) src/apps/embed_doc.cpp
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/embed_doc.cpp -o embed_doc
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/embed_doc.cpp $(LINKFLAGS) -o embed_doc
 
 cf_predict: $(OBJS) src/apps/cf_predict.cpp
-	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/cf_predict.cpp -o cf_predict
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/cf_predict.cpp $(LINKFLAGS) -o cf_predict
 
 $(STATIC_LIB): $(OBJS)
 	ar -crv $@ $(OBJS)
@@ -136,4 +148,4 @@ test: $(TESTS)
 lib: $(STATIC_LIB)
 
 clean:
-	rm -rf *.o starspace gtest.a gtest_main.a *_test query_nn query_predict print_ngrams embed_doc cf_predict
+	rm -rf *.o starspace gtest.a gtest_main.a libstarspace.a *_test query_nn query_predict print_ngrams embed_doc cf_predict test_api

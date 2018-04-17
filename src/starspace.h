@@ -18,6 +18,7 @@
 #include "doc_parser.h"
 #include "model.h"
 #include "utils/utils.h"
+#include "utils/simple_matrix.h"
 
 namespace starspace {
 
@@ -60,6 +61,7 @@ class StarSpace {
     const std::string kMagic = "STARSPACE-2017-2";
 
     void loadBaseDocs();
+    void initBaseDocSimpleMatrix();
 
     void predictOne(
         const std::vector<Base>& input,
@@ -88,6 +90,7 @@ class StarSpace {
     std::shared_ptr<EmbedModel> model_;
 
     std::vector<Matrix<Real>> baseDocVectors_;
+    std::shared_ptr<SimpleMatrix> baseDocSimpleMatrix_;
 };
 
 }

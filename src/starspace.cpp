@@ -301,8 +301,27 @@ void StarSpace::loadBaseDocs() {
       std::cerr << "ERROR: basedoc file '" << args_->basedoc << "' is empty." << std::endl;
       exit(EXIT_FAILURE);
     }
+
+    // for CFSpace, init simple matrix to use openblas
+    initBaseDocSimpleMatrix();
     cout << "Finished loading " << baseDocVectors_.size() << " base docs.\n";
   }
+}
+
+void StarSpace::initBaseDocSimpleMatrix() {
+  assert(baseDocVectors_.size() > 0);
+  size_t m = baseDocVectors_.size();
+  size_t n = baseDocVectors_[0].getDims().c;
+  baseDocSimpleMatrix_ = std::make_shared<SimpleMatrix>(m, n);
+  for (size_t i = 0; i < baseDocVectors_.size(); ++i) {
+    assert(baseDocVectors_[i].getDims().r == 1);
+    for (size_t j = 0; j < n; ++j) {
+      baseDocSimpleMatrix_->data_[i*n + j] = baseDocVectors_[i][0][j];
+    }
+  }
+
+  // openblas use col major matrix, so convert to col major
+  baseDocSimpleMatrix_->convertColMajor();
 }
 
 void StarSpace::predictOne(
@@ -328,6 +347,7 @@ void StarSpace::predictOneForCF(
     vector<Predictions>& pred,
     const std::unordered_set<int> &banSet) {
   auto lhsM = model_->projectLHS(input);
+
   std::priority_queue<Predictions> heap;
   for (int i = 0; i < baseDocVectors_.size(); i++) {
     auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
