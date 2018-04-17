@@ -19,6 +19,8 @@ INCLUDES = -I$(BOOST_DIR)
 
 STATIC_LIB= libstarspace.a
 
+all: starspace apps lib
+
 opt: CXXFLAGS += -O3 -funroll-loops
 opt: starspace
 
