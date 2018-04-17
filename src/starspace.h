@@ -29,6 +29,7 @@ class StarSpace {
 
     void init();
     void initFromTsv(const std::string& filename);
+    // TODO(zhezhaoxu) return bool
     void initFromSavedModel(const std::string& filename);
 
     void train();
@@ -46,6 +47,9 @@ class StarSpace {
         const std::string& line,
         std::vector<Base>& ids,
         const std::string& sep);
+    void parseForCF(
+        const std::vector<std::string> &tokens,
+        std::vector<Base>& ids);
 
     void nearestNeighbor(const std::string& line, int k);
 
@@ -67,6 +71,7 @@ class StarSpace {
 
     std::shared_ptr<Args> args_;
     std::vector<std::vector<Base>> baseDocs_;
+    std::shared_ptr<Dictionary> dict_;
   private:
     void initParser();
     void initDataHandler();
@@ -76,7 +81,6 @@ class StarSpace {
         const std::vector<Base>& rhs,
         std::vector<Predictions>& pred);
 
-    std::shared_ptr<Dictionary> dict_;
     std::shared_ptr<DataParser> parser_;
     std::shared_ptr<InternDataHandler> trainData_;
     std::shared_ptr<InternDataHandler> validData_;

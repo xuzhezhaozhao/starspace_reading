@@ -223,6 +223,12 @@ void StarSpace::parseForCF(
   parser_->parseForCF(tokens, ids);
 }
 
+void StarSpace::parseForCF(
+        const std::vector<std::string> &tokens,
+        std::vector<Base>& ids) {
+  parser_->parseForCF(tokens, ids);
+}
+
 Matrix<Real> StarSpace::getDocVector(const string& line, const string& sep) {
   vector<Base> ids;
   parseDoc(line, ids, sep);

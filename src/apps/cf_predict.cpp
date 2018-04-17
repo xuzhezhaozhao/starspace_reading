@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
     sp.parseForCF(input, query_vec, " ");
     std::cout << "query_vec.size = " << query_vec.size() << std::endl;
     std::unordered_set<int> banSet;
+    banSet.clear();
     for (auto &p: query_vec) {
       std::cout << "ban id = " << p.first << std::endl;
       banSet.insert(p.first);
