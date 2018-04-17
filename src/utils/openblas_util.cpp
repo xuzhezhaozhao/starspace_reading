@@ -33,7 +33,7 @@ void cblas_vec_dot_matrix(const SimpleVector &vec, const SimpleMatrix &mat,
 void cblas_vec_dot_matrix(const Matrix<Real> &vec, const SimpleMatrix &mat,
                SimpleVector &output) {
   assert(vec.getDims().r == 1);
-  assert(vec.getDims().r == 1);
+  assert(vec.getDims().c == mat.n_);
 
   int m = static_cast<int>(mat.m_);
   int n = static_cast<int>(mat.n_);

@@ -73,6 +73,7 @@ class StarSpace {
     // same as getScoresForCF, but use openblas
     void fastGetScoresForCF(
         const Matrix<Real> &lhsM,
+        int64_t N,
         std::priority_queue<Predictions> &heap);
     void predictOneForCF(
         const std::vector<Base>& input,

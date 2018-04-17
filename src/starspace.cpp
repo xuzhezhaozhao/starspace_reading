@@ -302,11 +302,11 @@ void StarSpace::loadBaseDocs() {
                 << std::endl;
       exit(EXIT_FAILURE);
     }
-
-    // for CFSpace, init simple matrix to use openblas
-    initBaseDocSimpleMatrix();
     cout << "Finished loading " << baseDocVectors_.size() << " base docs.\n";
   }
+  // for CFSpace, init simple matrix to use openblas
+  initBaseDocSimpleMatrix();
+  cout << "Finished init base doc simple matrix.\n";
 }
 
 void StarSpace::initBaseDocSimpleMatrix() {
@@ -351,11 +351,12 @@ void StarSpace::getScoresForCF(Matrix<Real>& lhsM,
   }
 }
 
-void StarSpace::fastGetScoresForCF(const Matrix<Real>& lhsM,
+void StarSpace::fastGetScoresForCF(const Matrix<Real>& lhsM, int64_t N,
                                std::priority_queue<Predictions>& heap) {
   assert(lhsM.getDims().r == 1);
-  SimpleVector output(lhsM.getDims().c);
+  SimpleVector output(N);
   cblas_vec_dot_matrix(lhsM, *baseDocSimpleMatrix_, output);
+
   for (int64_t i = 0; i < output.m_; ++i) {
     heap.push({output[i], i});
   }
@@ -366,7 +367,7 @@ void StarSpace::predictOneForCF(const vector<Base>& input,
                                 const std::unordered_set<int>& banSet) {
   auto lhsM = model_->projectLHS(input); // lhsM alread norm
   std::priority_queue<Predictions> heap;
-  fastGetScoresForCF(lhsM, heap);
+  fastGetScoresForCF(lhsM, baseDocSimpleMatrix_->m_, heap);
 
   // get the first K predictions
   int i = 0;
