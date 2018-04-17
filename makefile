@@ -108,7 +108,10 @@ starspace_api.o: src/api/starspace_api.cpp src/api/starspace_api.h
 starspace: $(OBJS) src/main.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/main.cpp -o starspace
 
-apps: query_nn query_predict print_ngrams embed_doc cf_predict
+test_api: $(OBJS) src/api/test_api.cpp
+	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/api/test_api.cpp -o test_api
+
+apps: query_nn query_predict print_ngrams embed_doc cf_predict test_api
 
 query_nn: $(OBJS) src/apps/query_nn.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INCLUDES) -g src/apps/query_nn.cpp -o query_nn

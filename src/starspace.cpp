@@ -335,6 +335,7 @@ void StarSpace::predictOneForCF(
   }
   // get the first K predictions
   int i = 0;
+  std::cout << "args_->K = " << args_->K << std::endl;
   while (i < args_->K && heap.size() > 0) {
     auto t = heap.top();
     heap.pop();

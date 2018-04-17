@@ -19,6 +19,8 @@ bool StarSpaceApi::initFromSavedModel(const std::string &model) {
 }
 
 bool StarSpaceApi::loadBaseDocs(const std::string &basedoc) {
+  //sp_.args_->basedoc = basedoc;
+  sp_.loadBaseDocs();
 
   return true;
 }

@@ -38,3 +38,4 @@ query_nn
 query_predict
 cf_predict
 starspace
+test_api
