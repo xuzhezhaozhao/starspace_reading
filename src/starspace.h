@@ -10,6 +10,7 @@
 #pragma once
 
 #include <unordered_set>
+#include <queue>
 
 #include "utils/args.h"
 #include "dict.h"
@@ -66,6 +67,13 @@ class StarSpace {
     void predictOne(
         const std::vector<Base>& input,
         std::vector<Predictions>& pred);
+    void getScoresForCF(
+        Matrix<Real> &lhsM,
+        std::priority_queue<Predictions> &heap);
+    // same as getScoresForCF, but use openblas
+    void fastGetScoresForCF(
+        const Matrix<Real> &lhsM,
+        std::priority_queue<Predictions> &heap);
     void predictOneForCF(
         const std::vector<Base>& input,
         std::vector<Predictions>& pred,

@@ -7,7 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-
 #include "starspace.h"
 #include <iostream>
 #include <queue>
@@ -15,19 +14,21 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include "utils/simple_vector.h"
+#include "utils/openblas_util.h"
+
 using namespace std;
 
 namespace starspace {
 
 StarSpace::StarSpace(shared_ptr<Args> args)
-  : args_(args)
-  , dict_(nullptr)
-  , parser_(nullptr)
-  , trainData_(nullptr)
-  , validData_(nullptr)
-  , testData_(nullptr)
-  , model_(nullptr)
-  {}
+    : args_(args),
+      dict_(nullptr),
+      parser_(nullptr),
+      trainData_(nullptr),
+      validData_(nullptr),
+      testData_(nullptr),
+      model_(nullptr) {}
 
 void StarSpace::initParser() {
   if (args_->fileFormat == "fastText") {
@@ -37,7 +38,8 @@ void StarSpace::initParser() {
     std::cout << "use labelDoc file format" << std::endl;
     parser_ = make_shared<LayerDataParser>(dict_, args_);
   } else {
-    cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
+    cerr << "Unsupported file format. Currently support: fastText or "
+            "labelDoc.\n";
     exit(EXIT_FAILURE);
   }
 }
@@ -65,7 +67,8 @@ shared_ptr<InternDataHandler> StarSpace::initData() {
   } else if (args_->fileFormat == "labelDoc") {
     return make_shared<LayerDataHandler>(args_);
   } else {
-    cerr << "Unsupported file format. Currently support: fastText or labelDoc.\n";
+    cerr << "Unsupported file format. Currently support: fastText or "
+            "labelDoc.\n";
     exit(EXIT_FAILURE);
   }
   return nullptr;
@@ -82,7 +85,9 @@ void StarSpace::init() {
   auto filename = args_->trainFile;
   dict_->readFromFile(filename, parser_);
   parser_->resetDict(dict_);
-  if (args_->debug) {dict_->save(cout);}
+  if (args_->debug) {
+    dict_->save(cout);
+  }
 
   // init train data class
   trainData_ = initData();
@@ -156,7 +161,9 @@ void StarSpace::initFromTsv(const string& filename) {
   // build dict
   dict_ = make_shared<Dictionary>(args_);
   dict_->loadDictFromModel(filename);
-  if (args_->debug) {dict_->save(cout);}
+  if (args_->debug) {
+    dict_->save(cout);
+  }
 
   // load Model
   model_ = make_shared<EmbedModel>(args_, dict_);
@@ -181,13 +188,12 @@ void StarSpace::train() {
       saveModel(filename);
       saveModelTsv(filename + ".tsv");
     }
-    cout << "Training epoch " << i << ": " << rate << ' ' << decrPerEpoch << endl;
-    auto err = model_->train(trainData_, args_->thread,
-			     t_start,  i,
-			     rate, rate - decrPerEpoch);
-    printf("\n ---+++ %20s %4d Train error : %3.8f +++--- %c%c%c\n",
-           "Epoch", i, err,
-           0xe2, 0x98, 0x83);
+    cout << "Training epoch " << i << ": " << rate << ' ' << decrPerEpoch
+         << endl;
+    auto err = model_->train(trainData_, args_->thread, t_start, i, rate,
+                             rate - decrPerEpoch);
+    printf("\n ---+++ %20s %4d Train error : %3.8f +++--- %c%c%c\n", "Epoch", i,
+           err, 0xe2, 0x98, 0x83);
     if (validData_ != nullptr) {
       auto valid_err = model_->test(validData_, args_->thread);
       cout << "Validation error: " << valid_err << endl;
@@ -195,37 +201,30 @@ void StarSpace::train() {
     rate -= decrPerEpoch;
 
     auto t_end = std::chrono::high_resolution_clock::now();
-    auto tot_spent = std::chrono::duration<double>(t_end-t_start).count();
-    if (tot_spent >args_->maxTrainTime) {
+    auto tot_spent = std::chrono::duration<double>(t_end - t_start).count();
+    if (tot_spent > args_->maxTrainTime) {
       cout << "MaxTrainTime exceeded." << endl;
       break;
     }
   }
 }
 
-void StarSpace::parseDoc(
-    const string& line,
-    vector<Base>& ids,
-    const string& sep) {
-
+void StarSpace::parseDoc(const string& line, vector<Base>& ids,
+                         const string& sep) {
   vector<string> tokens;
   boost::split(tokens, line, boost::is_any_of(string(sep)));
   parser_->parse(tokens, ids);
 }
 
-void StarSpace::parseForCF(
-    const string& line,
-    vector<Base>& ids,
-    const string& sep) {
-
+void StarSpace::parseForCF(const string& line, vector<Base>& ids,
+                           const string& sep) {
   vector<string> tokens;
   boost::split(tokens, line, boost::is_any_of(string(sep)));
   parser_->parseForCF(tokens, ids);
 }
 
-void StarSpace::parseForCF(
-        const std::vector<std::string> &tokens,
-        std::vector<Base>& ids) {
+void StarSpace::parseForCF(const std::vector<std::string>& tokens,
+                           std::vector<Base>& ids) {
   parser_->parseForCF(tokens, ids);
 }
 
@@ -239,7 +238,8 @@ MatrixRow StarSpace::getNgramVector(const string& phrase) {
   vector<string> tokens;
   boost::split(tokens, phrase, boost::is_any_of(string(" ")));
   if (tokens.size() > args_->ngrams) {
-    std::cerr << "Error! Input ngrams size is greater than model ngrams size.\n";
+    std::cerr
+        << "Error! Input ngrams size is greater than model ngrams size.\n";
     exit(EXIT_FAILURE);
   }
   if (tokens.size() == 1) {
@@ -251,13 +251,14 @@ MatrixRow StarSpace::getNgramVector(const string& phrase) {
   }
 
   uint64_t h = 0;
-  for (auto token: tokens) {
+  for (auto token : tokens) {
     if (dict_->getType(token) == entry_type::word) {
       h = h * Dictionary::HASH_C + dict_->hash(token);
     }
   }
   int64_t id = h % args_->bucket;
-  return model_->getLHSEmbeddings()->row(id + dict_->nwords() + dict_->nlabels());
+  return model_->getLHSEmbeddings()->row(id + dict_->nwords() +
+                                         dict_->nlabels());
 }
 
 void StarSpace::nearestNeighbor(const string& line, int k) {
@@ -275,12 +276,11 @@ void StarSpace::loadBaseDocs() {
       exit(EXIT_FAILURE);
     }
     for (int i = 0; i < dict_->nlabels(); i++) {
-      baseDocs_.push_back({ make_pair(i + dict_->nwords(), 1.0) });
+      baseDocs_.push_back({make_pair(i + dict_->nwords(), 1.0)});
       baseDocVectors_.push_back(
-          model_->projectRHS({ make_pair(i + dict_->nwords(), 1.0) })
-      );
+          model_->projectRHS({make_pair(i + dict_->nwords(), 1.0)}));
     }
-    cout << "Predictions use " <<  dict_->nlabels() << " known labels." << endl;
+    cout << "Predictions use " << dict_->nlabels() << " known labels." << endl;
   } else {
     cout << "Loading base docs from file : " << args_->basedoc << endl;
     ifstream fin(args_->basedoc);
@@ -298,7 +298,8 @@ void StarSpace::loadBaseDocs() {
     }
     fin.close();
     if (baseDocVectors_.size() == 0) {
-      std::cerr << "ERROR: basedoc file '" << args_->basedoc << "' is empty." << std::endl;
+      std::cerr << "ERROR: basedoc file '" << args_->basedoc << "' is empty."
+                << std::endl;
       exit(EXIT_FAILURE);
     }
 
@@ -316,22 +317,22 @@ void StarSpace::initBaseDocSimpleMatrix() {
   for (size_t i = 0; i < baseDocVectors_.size(); ++i) {
     assert(baseDocVectors_[i].getDims().r == 1);
     for (size_t j = 0; j < n; ++j) {
-      baseDocSimpleMatrix_->data_[i*n + j] = baseDocVectors_[i][0][j];
+      baseDocSimpleMatrix_->data_[i * n + j] = baseDocVectors_[i][0][j];
     }
   }
 
+  // TODO normal matrix
   // openblas use col major matrix, so convert to col major
   baseDocSimpleMatrix_->convertColMajor();
 }
 
-void StarSpace::predictOne(
-    const vector<Base>& input,
-    vector<Predictions>& pred) {
+void StarSpace::predictOne(const vector<Base>& input,
+                           vector<Predictions>& pred) {
   auto lhsM = model_->projectLHS(input);
   std::priority_queue<Predictions> heap;
   for (int i = 0; i < baseDocVectors_.size(); i++) {
     auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
-    heap.push({ cur_score, i });
+    heap.push({cur_score, i});
   }
   // get the first K predictions
   int i = 0;
@@ -342,17 +343,31 @@ void StarSpace::predictOne(
   }
 }
 
-void StarSpace::predictOneForCF(
-    const vector<Base>& input,
-    vector<Predictions>& pred,
-    const std::unordered_set<int> &banSet) {
-  auto lhsM = model_->projectLHS(input);
-
-  std::priority_queue<Predictions> heap;
+void StarSpace::getScoresForCF(Matrix<Real>& lhsM,
+                               std::priority_queue<Predictions>& heap) {
   for (int i = 0; i < baseDocVectors_.size(); i++) {
     auto cur_score = model_->similarity(lhsM, baseDocVectors_[i]);
-    heap.push({ cur_score, i });
+    heap.push({cur_score, i});
   }
+}
+
+void StarSpace::fastGetScoresForCF(const Matrix<Real>& lhsM,
+                               std::priority_queue<Predictions>& heap) {
+  assert(lhsM.getDims().r == 1);
+  SimpleVector output(lhsM.getDims().c);
+  cblas_vec_dot_matrix(lhsM, *baseDocSimpleMatrix_, output);
+  for (int64_t i = 0; i < output.m_; ++i) {
+    heap.push({output[i], i});
+  }
+}
+
+void StarSpace::predictOneForCF(const vector<Base>& input,
+                                vector<Predictions>& pred,
+                                const std::unordered_set<int>& banSet) {
+  auto lhsM = model_->projectLHS(input); // lhsM alread norm
+  std::priority_queue<Predictions> heap;
+  fastGetScoresForCF(lhsM, heap);
+
   // get the first K predictions
   int i = 0;
   std::cout << "args_->K = " << args_->K << std::endl;
@@ -367,11 +382,8 @@ void StarSpace::predictOneForCF(
   }
 }
 
-Metrics StarSpace::evaluateOne(
-    const vector<Base>& lhs,
-    const vector<Base>& rhs,
-    vector<Predictions>& pred) {
-
+Metrics StarSpace::evaluateOne(const vector<Base>& lhs, const vector<Base>& rhs,
+                               vector<Predictions>& pred) {
   std::priority_queue<Predictions> heap;
 
   auto lhsM = model_->projectLHS(lhs);
@@ -381,7 +393,7 @@ Metrics StarSpace::evaluateOne(
   auto score = model_->similarity(lhsM, rhsM);
 
   int rank = 1;
-  heap.push({ score, 0 });
+  heap.push({score, 0});
 
   for (int i = 0; i < baseDocVectors_.size(); i++) {
     // in the case basedoc labels are not provided, all labels become basedoc,
@@ -393,12 +405,12 @@ Metrics StarSpace::evaluateOne(
     if (cur_score > score) {
       rank++;
     } else if (cur_score == score) {
-      float flip = (float) rand() / RAND_MAX;
+      float flip = (float)rand() / RAND_MAX;
       if (flip > 0.5) {
         rank++;
       }
     }
-    heap.push({ cur_score, i + 1 });
+    heap.push({cur_score, i + 1});
   }
 
   // get the first K predictions
@@ -428,7 +440,8 @@ void StarSpace::printDoc(ostream& ofs, const vector<Base>& tokens) {
 void StarSpace::evaluate() {
   // check that it is not in trainMode 5
   if (args_->trainMode == 5) {
-    std::cerr << "Test is undefined in trainMode 5. Please use other trainMode for testing.\n";
+    std::cerr << "Test is undefined in trainMode 5. Please use other trainMode "
+                 "for testing.\n";
     exit(EXIT_FAILURE);
   }
 
@@ -443,16 +456,17 @@ void StarSpace::evaluate() {
   vector<thread> threads;
   vector<Metrics> metrics(numThreads);
   vector<vector<Predictions>> predictions(N);
-  int numPerThread = ceil((float) N / numThreads);
+  int numPerThread = ceil((float)N / numThreads);
   assert(numPerThread > 0);
 
   vector<ParseResults> examples;
   testData_->getNextKExamples(N, examples);
 
-  auto evalThread = [&] (int idx, int start, int end) {
+  auto evalThread = [&](int idx, int start, int end) {
     metrics[idx].clear();
     for (int i = start; i < end; i++) {
-      auto s = evaluateOne(examples[i].LHSTokens, examples[i].RHSTokens, predictions[i]);
+      auto s = evaluateOne(examples[i].LHSTokens, examples[i].RHSTokens,
+                           predictions[i]);
       metrics[idx].add(s);
     }
   };
@@ -461,16 +475,16 @@ void StarSpace::evaluate() {
     auto start = std::min(i * numPerThread, N);
     auto end = std::min(start + numPerThread, N);
     assert(end >= start);
-    threads.emplace_back(thread([=] {
-      evalThread(i, start, end);
-    }));
+    threads.emplace_back(thread([=] { evalThread(i, start, end); }));
   }
   for (auto& t : threads) t.join();
 
   Metrics result;
   result.clear();
   for (int i = 0; i < numThreads; i++) {
-    if (args_->debug) { metrics[i].print(); }
+    if (args_->debug) {
+      metrics[i].print();
+    }
     result.add(metrics[i]);
   }
   result.average();
@@ -523,4 +537,4 @@ void StarSpace::saveModelTsv(const string& filename) {
   fout.close();
 }
 
-} // starspace
+}  // starspace
